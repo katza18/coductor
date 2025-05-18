@@ -1,0 +1,5 @@
+typer
+openai
+python-dotenv
+tiktoken
+PyYAML
