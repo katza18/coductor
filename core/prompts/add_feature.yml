@@ -1,0 +1,35 @@
+name: add_feature
+description: Add a feature to an existing software project
+prompt: |
+  The client wants to add the following feature to their existing project:
+  Feature: "{{feature}}"
+
+  Your task is to recommend:
+  1. File Structure - Where in the file structure should this feature be added?
+  2. File docstrings - Describe the docstrings for each file that will be added or modified.
+  3. Test suite - Include test cases in docstrings for test files.
+  4. TODO List - Add this feature to the existing TODO list, outlining the tasks needed to implement it.
+  
+  Return only a JSON object like this:
+  {
+    todo: {
+      "goal1": [
+        "task1",
+        "task2"
+      ],
+      "goal2": [
+        "task3",
+        "task4"
+      ]
+    },
+    "structure": {
+      "project_root": {
+        "folder": {
+          "file": "docstring",
+          "subfolder": {
+            "file2": "docstring2"
+          }
+        }
+      }
+    },
+  }
