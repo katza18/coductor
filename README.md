@@ -20,8 +20,10 @@ coductor/
 │   ├── project_analyzer.py    # Parses repo, file trees, summaries
 │   ├── file_writer.py         # Writes files safely
 │   └── prompts/               # YAML or txt prompt templates
-│       ├── scaffold.yml
-│       └── add_feature.yml
+│       ├── add_feature.yml
+│       ├── generate_name_and_stack.yml
+│       ├── plan_project.yml
+│       └── prompt_load.py
 ├── tests/
 │   └── test_scaffold.py
 ├── .coductor/                 # Project-local memory, logs, cache
