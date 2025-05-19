@@ -13,11 +13,11 @@ prompt: |
   Return only a JSON object like this:
   {
     todo: {
-      "goal1": [
+      "file_name1": [
         "task1",
         "task2"
       ],
-      "goal2": [
+      "file_name2": [
         "task3",
         "task4"
       ]

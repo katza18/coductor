@@ -11,15 +11,15 @@ prompt: |
   2. File docstrings - Describe the docstrings for each file.
   3. Test suite - Include test cases in doctstrings for test files.
   4. TODO List - Outline the project as a highly detailed list of TODO items to complete MVP.
-  
+
   Return only a JSON object like this:
   {
     todo: {
-      "goal1": [
+      "file1": [
         "task1",
         "task2"
       ],
-      "goal2": [
+      "file2": [
         "task3",
         "task4"
       ]
