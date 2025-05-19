@@ -6,10 +6,10 @@ prompt: |
 
   Your task is to recommend:
   1. File Structure - Where in the file structure should this feature be added?
-  2. File docstrings - Describe the docstrings for each file that will be added or modified.
-  3. Test suite - Include test cases in docstrings for test files.
-  4. TODO List - Add this feature to the existing TODO list, outlining the tasks needed to implement it.
-  
+  2. File docstrings - Add the docstrings for each new file or modify an existing files docstring.
+  3. Tests - Include test cases in docstrings for test files.
+  4. TODO List - Create a TODO list for this feature with tasks and goals.
+
   Return only a JSON object like this:
   {
     todo: {
@@ -23,12 +23,9 @@ prompt: |
       ]
     },
     "structure": {
-      "project_root": {
-        "folder": {
+      "folder": {
+        "subfolder": {
           "file": "docstring",
-          "subfolder": {
-            "file2": "docstring2"
-          }
         }
       }
     },
