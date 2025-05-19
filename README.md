@@ -5,6 +5,7 @@ An AI based CLI tool that manages your projects for you from start to finish.
 A local CLI-based AI development assistant that manages your project like a technical lead. It scaffolds files, writes summaries, maintains a dynamic todo list, develops a comprehensive test suite, answers questions, and evolves the codebase alongside the developer.
 
 ## Project Structure
+```
 coductor/
 ├── core/                      # Core logic
 │   ├── agent.py               # LLM-driven reasoning engine
@@ -34,3 +35,4 @@ coductor/
 ├── requirements.txt
 ├── .gitignore
 └── pyproject.toml             # For packaging
+```
