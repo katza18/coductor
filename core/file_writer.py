@@ -62,6 +62,47 @@ def append_to_file(filepath: Path, content_to_append: str):
 
     console.print(f"[green]Appended to {filepath}[/green]")
 
+def append_docstring(filepath: Path, docstring: str):
+    '''
+    Append a docstring to the beginning of a file.
+    '''
+    # If there is no docstring, add the docstring to the begging of the file.
+    filepath = Path(filepath)
+    filepath.parent.mkdir(parents=True, exist_ok=True)
+    with open(filepath, "r") as f:
+        content = f.read()
+        if content.startswith('"""'):
+            # There is likely a docstring, so we will need to overwrite it.
+            # Find the end of the docstring
+            end_index = content.find('"""', 3)
+            if end_index == -1:
+                raise ValueError(f"Docstring not closed in {filepath}")
+        elif content.startswith("'''"):
+            end_index = content.find("'''", 3)
+            if end_index == -1:
+                raise ValueError(f"Docstring not closed in {filepath}")
+        else:
+            end_index = 0
+        new_content = "'''" + docstring + "'''" + content[end_index:]
+
+    # Show diff and ask for confirmation
+    diff = unified_diff(
+        content.splitlines(),
+        new_content.splitlines(),
+        fromfile=str(filepath),
+        tofile=str(filepath),
+        lineterm=""
+    )
+    console.print(f"[yellow]Proposed changes to {filepath}:[/yellow]\n")
+    console.print("\n".join(diff), style="bold")
+    if not Confirm.ask(f"Overwrite {filepath}?"):
+        console.print(f"[red]Aborted write to {filepath}[/red]")
+        return
+
+    # Write the file
+    filepath.write_text(new_content)
+    console.print(f"[green]Wrote to {filepath}[/green]")
+
 
 def create_structure_from_dict(file_structure: dict, base_path: Path = Path('.')):
     '''
@@ -74,6 +115,22 @@ def create_structure_from_dict(file_structure: dict, base_path: Path = Path('.')
             path.mkdir(parents=True, exist_ok=True)
             create_structure_from_dict(content, path)
         else:
-            # Otherwise, create a file with the content
-            safe_write_file(path, '')
-            console.print(f"[green]Created file:[/green]{path}")
+            if not path.exists():
+                # Create a file with the content
+                safe_write_file(path, content)
+                console.print(f"[green]Created file:[/green]{path}")
+            else:
+                # Add the docstring to the begging if the file exists
+                append_docstring(path, content)
+
+
+def append_to_todo(category: str, tasks: list[str]):
+    '''
+    Append a TODO to the TODO list in project root.
+    '''
+    filepath = Path("./TODO.md")
+    filepath.parent.mkdir(parents=True, exist_ok=True)
+    with open(filepath, "a") as f:
+        f.write("\n\n" + category)
+        f.write("\n" + "\n".join(tasks))
+    console.print(f"[green]Appended to {filepath}[/green]")
