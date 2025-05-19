@@ -6,7 +6,7 @@ A local CLI-based AI development assistant that manages your project like a tech
 
 ## Project Structure
 coductor/
-├── core/                    # Core logic
+├── core/                      # Core logic
 │   ├── agent.py               # LLM-driven reasoning engine
 │   ├── commands/              # CLI commands
 │   │   ├── build.py           # Creates a new project from prompt
@@ -24,9 +24,11 @@ coductor/
 ├── tests/
 │   └── test_scaffold.py
 ├── .coductor/                 # Project-local memory, logs, cache
-│   ├── memory.json            # task/todo list
+|   ├── todo.yml               # YAML file to track TODO items
+|   ├── memory.yml             # Stores project goals, decisions, summaries
+|   ├── history.log            # Optional: Running log of agent-user interactions
 │   ├── logs/                  # chat and operation logs
-│   ├── cache/                 # temp file summaries and LLM responses
+│   └── cache/                 # temp file summaries and LLM responses
 ├── main.py                    # Entry point (Typer app)
 ├── README.md
 ├── requirements.txt
