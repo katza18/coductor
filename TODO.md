@@ -53,21 +53,23 @@
 ## 🧩 4. CLI Commands in `core/commands/`
 
 ### `build.py`
-- [ ] Ask user: “What do you want to build?”
-- [ ] Ask LLM for stack recommendation and plan
-- [ ] Confirm scaffold with user
-- [ ] Generate base structure + README
+- [x] Ask user: “What do you want to build?”
+- [x] Ask LLM for stack recommendation and plan
+- [x] Confirm scaffold with user
+- [x] Generate base structure + README + TODO + tests
+
+### `add.py`
+- [ ] Ask: “What feature would you like to add?”
+- [ ] Analyze codebase to suggest changes
+- [ ] Use LLM to generate necessary code
+- [ ] Apply with `file_writer`
 
 ### `scaffold.py`
 - [ ] Scan repo and create function expectations
 - [ ] Annotate files with doc comments
 - [ ] Populate summaries in memory
 
-### `add_feature.py`
-- [ ] Ask: “What feature would you like to add?”
-- [ ] Analyze codebase to suggest changes
-- [ ] Use LLM to generate necessary code
-- [ ] Apply with `file_writer`
+
 
 ### `todo.py`
 - [ ] `todo` — list items
@@ -86,7 +88,7 @@
 ---
 
 ## 🧪 5. Testing
-- [ ] Create `tests/test_scaffold.py`
+- [ ] Create `tests/test_build.py`
 - [ ] Add unit tests for core logic (`memory`, `file_writer`, etc.)
 - [ ] Use `pytest` and fixtures
 - [ ] Optional: Add test watcher (`pytest-watch`)
