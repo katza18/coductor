@@ -1,0 +1,37 @@
+name: plan_project
+description: Plan the structure of a new software project
+prompt: |
+  The client wants to build the following project:
+  Project Name: "{{name}}"
+  Project Idea: "{{idea}}"
+  Tech Stack: "{{stack}}"
+
+  Your task is to recommend:
+  1. File Structure - Describe the directory and file structure of the project.
+  2. File docstrings - Describe the docstrings for each file.
+  3. Test suite - Include test cases in doctstrings for test files.
+  4. TODO List - Outline the project as a highly detailed list of TODO items to complete MVP.
+  
+  Return only a JSON object like this:
+  {
+    todo: {
+      "goal1": [
+        "task1",
+        "task2"
+      ],
+      "goal2": [
+        "task3",
+        "task4"
+      ]
+    },
+    "structure": {
+      "project_root": {
+        "folder": {
+          "file": "docstring",
+          "subfolder": {
+            "file2": "docstring2"
+          }
+        }
+      }
+    },
+  }
