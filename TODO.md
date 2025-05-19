@@ -59,31 +59,23 @@
 - [x] Generate base structure + README + TODO + tests
 
 ### `add.py`
-- [ ] Ask: “What feature would you like to add?”
-- [ ] Analyze codebase to suggest changes
-- [ ] Use LLM to generate necessary code
-- [ ] Apply with `file_writer`
+- [x] Ask: “What feature would you like to add?”
+- [x] Analyze codebase to suggest changes
+- [x] Use LLM to generate necessary code
+- [x] Apply with `file_writer`
 
 ### `scaffold.py`
 - [ ] Scan repo and create function expectations
 - [ ] Annotate files with doc comments
 - [ ] Populate summaries in memory
 
+### `tests.py`
+- [x] Analyze code and extract logic units
+- [x] Ask LLM to generate tests
+- [x] Write to `tests/test_*.py`
 
-
-### `todo.py`
-- [ ] `todo` — list items
-- [ ] `todo --complete N` — mark complete
-- [ ] `todo --add` — add manual todo
-
-### `generate_tests.py`
-- [ ] Analyze code and extract logic units
-- [ ] Ask LLM to generate tests
-- [ ] Write to `tests/test_*.py`
-
-### `ask.py`
-- [ ] Accept freeform project questions
-- [ ] Use analyzer + memory + LLM to answer
+### Global
+- [ ] Add initial prompt if the project has no session history.
 
 ---
 
