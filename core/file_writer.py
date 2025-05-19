@@ -61,3 +61,19 @@ def append_to_file(filepath: Path, content_to_append: str):
         f.write("\n" + content_to_append)
 
     console.print(f"[green]Appended to {filepath}[/green]")
+
+
+def create_structure_from_dict(file_structure: dict, base_path: Path = Path('.')):
+    '''
+    Create a directory structure based on a dictionary.
+    '''
+    for name, content in file_structure.items():
+        path = base_path / name
+        if isinstance(content, dict):
+            # If the content is a dictionary, create a folder and recurse
+            path.mkdir(parents=True, exist_ok=True)
+            create_structure_from_dict(content, path)
+        else:
+            # Otherwise, create a file with the content
+            safe_write_file(path, '')
+            console.print(f"[green]Created file:[/green]{path}")
