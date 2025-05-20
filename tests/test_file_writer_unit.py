@@ -161,7 +161,7 @@ def test_append_docstring_existing_file_no_docstring(mock_file_exists, mock_file
     """
     Test append_docstring when the file exists and the docstring is not present.
     """
-    filepath = "test.txt"
+    filepath = "test.py"
     docstring = "This is a docstring"
     append_docstring(filepath, docstring)
 
@@ -175,13 +175,13 @@ def test_append_docstring_new_file(mock_file_not_exists, mock_file_write, mock_c
     """
     Test append_docstring when the file does not exist.
     """
-    filepath = "test.txt"
+    filepath = "test.py"
     docstring = "This is a docstring"
     append_docstring(filepath, docstring)
 
     # Assert file is created and docstring is appended
     mock_file_not_exists.assert_called_once()
-    mock_file_write[0].assert_called_once_with('"""' + docstring + '"""')
+    mock_file_write[0].assert_called_once_with('"""' + docstring + '"""\n')
     mock_file_write[1].assert_called_once_with(parents=True, exist_ok=True)
 
 
@@ -190,7 +190,7 @@ def test_append_docstring_existing_file_declined(mock_file_exists, mock_file_rea
     Test append_docstring when the file exists and the docstring is already present
     and the user chooses not to overwrite.
     """
-    filepath = "test.txt"
+    filepath = "test.py"
     docstring = "This is a docstring"
     mock_file_read.return_value = '"""Existing docstring"""'
 
@@ -210,7 +210,7 @@ def test_append_docstring_existing_file_confirm(mock_file_exists, mock_file_read
     Test append_docstring when the file exists and the docstring is already present
     and the user chooses to overwrite.
     """
-    filepath = "test.txt"
+    filepath = "test.py"
     docstring = "This is a docstring"
     mock_file_read.return_value = '"""Existing docstring"""'
 

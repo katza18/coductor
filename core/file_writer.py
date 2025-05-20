@@ -19,6 +19,38 @@ from difflib import unified_diff
 
 console = Console()
 
+file_type_to_multi_line_comment = {
+    '.py': {'start': '"""', 'end': '"""'},
+    '.js': {'start': '/*', 'end': '*/'},
+    '.ts': {'start': '/*', 'end': '*/'},
+    '.html': {'start': '<!--', 'end': '-->'},
+    '.css': {'start': '/*', 'end': '*/'},
+    '.json': {'start': '/*', 'end': '*/'},
+    '.yaml': {'start': '#', 'end': '#'},
+    '.yml': {'start': '#', 'end': '#'},
+    '.txt': {'start': '#', 'end': '#'},
+    '.md': {'start': '<!--', 'end': '-->'},
+    '.sh': {'start': '#', 'end': '#'},
+    '.bash': {'start': '#', 'end': '#'},
+    '.dockerfile': {'start': '#', 'end': '#'},
+    '.dockerignore': {'start': '#', 'end': '#'},
+    '.gitignore': {'start': '#', 'end': '#'},
+    '.java': {'start': '/**', 'end': '*/'},
+    '.c': {'start': '/*', 'end': '*/'},
+    '.cpp': {'start': '/*', 'end': '*/'},
+    '.h': {'start': '/*', 'end': '*/'},
+    '.hpp': {'start': '/*', 'end': '*/'},
+    '.go': {'start': '/*', 'end': '*/'},
+    '.php': {'start': '/*', 'end': '*/'},
+    '.swift': {'start': '/*', 'end': '*/'},
+    '.rb': {'start': '=begin', 'end': '=end'},
+    '.r': {'start': '#', 'end': '#'},
+    '.pl': {'start': '#', 'end': '#'},
+    '.lua': {'start': '--[[', 'end': '--]]'},
+    '.sql': {'start': '/*', 'end': '*/'},
+    '.class': {'start': '/*', 'end': '*/'},
+}
+
 def safe_write_file(filepath: str, new_content: str, force: bool = False):
     filepath = Path(filepath)
     old_content = ""
@@ -72,27 +104,29 @@ def append_docstring(filepath: str, docstring: str):
     filepath = Path(filepath)
     filepath.parent.mkdir(parents=True, exist_ok=True)
 
+    # Get file extension
+    file_extension = filepath.suffix
+    start_comment = file_type_to_multi_line_comment[file_extension]['start']
+    end_comment = file_type_to_multi_line_comment[file_extension]['end']
+
     # If the file does not exist, create it with the docstring.
     if not filepath.exists():
-        filepath.write_text('"""' + docstring + '"""')
+        filepath.write_text(start_comment + docstring + end_comment + '\n')
         console.print(f"[green]Created file with docstring:[/green]{filepath}")
         return
-    
+
     # If the file exists, read it and check if there is a docstring.
+    # TODO: Add support for ''' docstrings.
     content = filepath.read_text()
-    if content.startswith('"""'):
+    if content.startswith(start_comment):
         # There is likely a docstring, so we will need to overwrite it.
         # Find the end of the docstring
-        end_index = content.find('"""', 3) + 3
-        if end_index == -1:
-            raise ValueError(f"Docstring not closed in {filepath}")
-    elif content.startswith("'''"):
-        end_index = content.find("'''", 3) + 3
+        end_index = content.find(end_comment, len(start_comment)) + len(end_comment)
         if end_index == -1:
             raise ValueError(f"Docstring not closed in {filepath}")
     else:
         end_index = 0
-    new_content = '"""' + docstring + '"""\n' + content[end_index:]
+    new_content = start_comment + docstring + end_comment + '\n' + content[end_index:]
 
     # If there was a docstring, show diff and ask for confirmation
     if end_index != 0:
