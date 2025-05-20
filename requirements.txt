@@ -3,3 +3,5 @@ openai
 python-dotenv
 tiktoken
 PyYAML
+pytest
+Jinja2
