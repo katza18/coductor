@@ -16,7 +16,7 @@ Output: Project directory with scaffolding + summaries
 import typer
 from rich.console import Console
 from core.agent import send_prompt
-from core.file_writer import safe_write_file, create_structure_from_dict 
+from core.file_writer import safe_write_file, create_structure_from_dict
 from core.prompts.prompt_loader import load_prompt
 
 # Init typer app and rich console
@@ -31,7 +31,7 @@ def get_project_idea() -> str:
     return typer.prompt("Describe your project idea")
 
 
-def ask_coductor_for_name_and_stack(idea: str) -> tuple[str, str]:
+def ask_coductor_for_name_and_stack(idea: str) -> dict[str, str]:
     '''
     Ask Coductor for a project name and tech stack.
     '''
@@ -63,15 +63,12 @@ def confirm_plan(plan: dict) -> bool:
     '''
     Confirm the plan with the user.
     '''
-    console.print("[bold cyan]Recommended Stack:[/bold cyan]")
-    console.print(plan['stack'])
-
     console.print("[bold cyan]TODO List:[/bold cyan]")
-    for i, item in enumerate(plan['todo_list'], 1):
+    for i, item in enumerate(plan['todo'], 1):
         console.print(f"{i}. {item}")
 
     console.print(f"[bold cyan]File Structure:[/bold cyan]")
-    console.print(plan['file_structure'])
+    console.print(plan['structure'])
 
     return typer.confirm("\nDo you want to proceed with this plan?")
 
@@ -79,7 +76,7 @@ def confirm_plan(plan: dict) -> bool:
 def scaffold_project(file_structure: dict, root: str = "./") -> None:
     '''
     Create the project structure based on the plan.
-    ''' 
+    '''
     # Create the project directory
     create_structure_from_dict(file_structure, base_path=root)
 
@@ -106,25 +103,25 @@ def generate_todo(todo_dict: dict) -> str:
         todo_content += f"\n\n## {goal}"
         for task in tasks:
             todo_content += f"\n- [ ] {task}"
-    
+
     safe_write_file("TODO.md", todo_content)
 
 
 @app.command("new")
-def build():
+def build_new():
     console.print("[bold green]Welcome to the Coductor Project Builder![/bold green]")
-    
+
     # Get project idea from user
     idea = get_project_idea()
 
     # Ask Coductor for a project name and tech stack
     name_stack = ask_coductor_for_name_and_stack(idea)
-    
+
     # Confirm the name and stack with the user
     if not confirm_name_and_stack(name_stack["name"], name_stack["stack"]):
         console.print("[red]Aborted by user.[/red]")
         raise typer.Abort()
-    
+
     # Ask Coductor to plan the project
     plan = ask_coductor_to_plan(idea, name_stack["name"], name_stack["stack"])
 
@@ -132,7 +129,7 @@ def build():
     if not confirm_plan(plan):
         console.print("[red]Aborted by user.[/red]")
         raise typer.Abort()
-    
+
     # Scaffold the project based on the plan
     scaffold_project(plan['structure'])
     generate_readme(name_stack['name'], idea, name_stack['stack'])
