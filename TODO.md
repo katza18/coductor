@@ -80,7 +80,9 @@
 ---
 
 ## 🧪 5. Testing
-- [ ] Create `tests/test_build.py`
+- [x] Create `tests/test_build.py`
+- [ ] Create `tests/test_add.py`
+- [ ] Create `tests/test_tests.py`
 - [ ] Add unit tests for core logic (`memory`, `file_writer`, etc.)
 - [ ] Use `pytest` and fixtures
 - [ ] Optional: Add test watcher (`pytest-watch`)
