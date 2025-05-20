@@ -13,6 +13,7 @@ Spec:
 
 Output: Project directory with scaffolding + summaries
 '''
+import asyncio
 import typer
 from rich.console import Console
 from core.agent import send_prompt
@@ -31,13 +32,13 @@ def get_project_idea() -> str:
     return typer.prompt("Describe your project idea")
 
 
-def ask_coductor_for_name_and_stack(idea: str) -> dict[str, str]:
+async def ask_coductor_for_name_and_stack(idea: str) -> dict[str, str]:
     '''
     Ask Coductor for a project name and tech stack.
     '''
     template = load_prompt("generate_name_and_stack")
     prompt = template.render(idea=idea)
-    return send_prompt(prompt)
+    return await send_prompt(prompt)
 
 
 def confirm_name_and_stack(name: str, stack: str) -> bool:
@@ -50,13 +51,13 @@ def confirm_name_and_stack(name: str, stack: str) -> bool:
     return typer.confirm("\nDo you want to proceed with this name and stack?")
 
 
-def ask_coductor_to_plan(idea: str, name: str, stack: str) -> dict:
+async def ask_coductor_to_plan(idea: str, name: str, stack: str) -> dict:
     '''
     Ask Coductor to plan the project.
     '''
     template = load_prompt("plan_project")
     prompt = template.render(idea=idea, stack=stack, name=name)
-    return send_prompt(prompt)
+    return await send_prompt(prompt)
 
 
 def confirm_plan(plan: dict) -> bool:
@@ -109,30 +110,37 @@ def generate_todo(todo_dict: dict) -> str:
 
 @app.command("new")
 def build_new():
-    console.print("[bold green]Welcome to the Coductor Project Builder![/bold green]")
+    asyncio.run(_build_new())
 
-    # Get project idea from user
-    idea = get_project_idea()
+async def _build_new():
+    try:
+        console.print("[bold green]Welcome to the Coductor Project Builder![/bold green]")
 
-    # Ask Coductor for a project name and tech stack
-    name_stack = ask_coductor_for_name_and_stack(idea)
+        # Get project idea from user
+        idea = get_project_idea()
 
-    # Confirm the name and stack with the user
-    if not confirm_name_and_stack(name_stack["name"], name_stack["stack"]):
-        console.print("[red]Aborted by user.[/red]")
+        # Ask Coductor for a project name and tech stack
+        name_stack = await ask_coductor_for_name_and_stack(idea)
+
+        # Confirm the name and stack with the user
+        if not confirm_name_and_stack(name_stack["name"], name_stack["stack"]):
+            console.print("[red]Aborted by user.[/red]")
+            raise typer.Abort()
+
+        # Ask Coductor to plan the project
+        plan = await ask_coductor_to_plan(idea, name_stack["name"], name_stack["stack"])
+
+        # Confirm the plan with the user
+        if not confirm_plan(plan):
+            console.print("[red]Aborted by user.[/red]")
+            raise typer.Abort()
+
+        # Scaffold the project based on the plan
+        scaffold_project(plan['structure'])
+        generate_readme(name_stack['name'], idea, name_stack['stack'])
+        generate_todo(plan['todo'])
+
+        console.print("[green]Project initialized successfully![/green]")
+    except Exception as e:
+        console.print(f"[red]Error:[/red] {e}")
         raise typer.Abort()
-
-    # Ask Coductor to plan the project
-    plan = ask_coductor_to_plan(idea, name_stack["name"], name_stack["stack"])
-
-    # Confirm the plan with the user
-    if not confirm_plan(plan):
-        console.print("[red]Aborted by user.[/red]")
-        raise typer.Abort()
-
-    # Scaffold the project based on the plan
-    scaffold_project(plan['structure'])
-    generate_readme(name_stack['name'], idea, name_stack['stack'])
-    generate_todo(plan['todo'])
-
-    console.print("[green]Project initialized successfully![/green]")

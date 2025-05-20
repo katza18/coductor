@@ -15,7 +15,6 @@ from dotenv import load_dotenv
 import openai
 from pathlib import Path
 import tiktoken
-import yaml
 import json
 from rich.console import Console
 
@@ -58,7 +57,7 @@ def save_history(session_history: list[dict]):
         json.dump(session_history, file, indent=4)
 
 
-def send_prompt(prompt: str, context: dict, stream: bool, model: str = DEFAULT_MODEL):
+async def send_prompt(prompt: str, model: str = DEFAULT_MODEL) -> dict:
     """
     Send a prompt to the LLM and return the response.
     """
@@ -68,10 +67,10 @@ def send_prompt(prompt: str, context: dict, stream: bool, model: str = DEFAULT_M
     
     try:
         # Initialize the OpenAI client
-        response = openai.ChatCompletion.create(
+        response = await openai.chat.completions.create(
             model=model,
             messages=session_history,
-            stream=stream,
+            stream=False,
             temperature=0.7,
         )
 
@@ -82,20 +81,21 @@ def send_prompt(prompt: str, context: dict, stream: bool, model: str = DEFAULT_M
         if prompt_tokens + expected_response_tokens > MAX_TOKENS:
             raise ValueError("Prompt too long! Please shorten input or reduce memory.")
 
-        # Extract the content from the response
-        if stream:
-            for chunk in response:
-                if "choices" in chunk and chunk.choices[0].delta.get("content"):
-                    yield chunk.choices[0].delta.content
-        else:
-            # Save messages to session history and return the response
-            session_history.append({"role": "assistant", "content": response.choices[0].message.content})
-            save_history(session_history)
-            return response.choices[0].message.content
+        
+        # Can be added later for streaming ai output
+        # if stream:
+        #     for chunk in response:
+        #         if "choices" in chunk and chunk.choices[0].delta.get("content"):
+        #             yield chunk.choices[0].delta.content
+        
+        # Save messages to session history and return the response
+        session_history.append({"role": "assistant", "content": response.choices[0].message.content})
+        save_history(session_history)
+        return json.loads(response.choices[0].message.content)
     
     except Exception as e:
         console.print(f"[bold red]Error:[/bold red] {e}")
-        return ''
+        return {}
 
 
 
