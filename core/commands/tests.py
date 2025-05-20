@@ -14,7 +14,7 @@ Spec:
 
 import typer
 from pathlib import Path
-from core.prompts import load_prompt
+from core.prompts.prompt_loader import load_prompt
 from rich.console import Console
 from core.agent import send_prompt
 

@@ -11,7 +11,7 @@ Spec:
 '''
 import typer
 from rich.console import Console
-from core.prompts import load_prompt
+from core.prompts.prompt_loader import load_prompt
 from core.agent import send_prompt
 from pathlib import Path
 from core.file_writer import append_to_todo, create_structure_from_dict
