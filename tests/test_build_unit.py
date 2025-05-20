@@ -17,6 +17,8 @@ from core.commands.build import (
     generate_todo
 )
 
+pytest_plugins = ('pytest_asyncio',)
+
 # -----------------------
 # get_project_idea
 # -----------------------
@@ -34,12 +36,13 @@ def test_get_project_idea(mock_print, mock_prompt):
 # -----------------------
 @patch("core.commands.build.send_prompt", return_value=("Coductor", "Python + Typer"))
 @patch("core.commands.build.load_prompt")
-def test_ask_coductor_for_name_and_stack(mock_load_prompt, mock_send_prompt):
+@pytest.mark.asyncio
+async def test_ask_coductor_for_name_and_stack(mock_load_prompt, mock_send_prompt):
     template = MagicMock()
     template.render.return_value = "Prompt text"
     mock_load_prompt.return_value = template
 
-    result = ask_coductor_for_name_and_stack("AI assistant")
+    result = await ask_coductor_for_name_and_stack("AI assistant")
     assert result == ("Coductor", "Python + Typer")
     template.render.assert_called_once_with(idea="AI assistant")
     mock_send_prompt.assert_called_once()
@@ -62,12 +65,13 @@ def test_confirm_name_and_stack_yes(mock_print, mock_confirm):
 # -----------------------
 @patch("core.commands.build.send_prompt", return_value={"todo": {}, "structure": {}, "stack": "Python", "file_structure": "some/dir"})
 @patch("core.commands.build.load_prompt")
-def test_ask_coductor_to_plan(mock_load_prompt, mock_send_prompt):
+@pytest.mark.asyncio
+async def test_ask_coductor_to_plan(mock_load_prompt, mock_send_prompt):
     template = MagicMock()
     template.render.return_value = "Rendered prompt"
     mock_load_prompt.return_value = template
 
-    result = ask_coductor_to_plan("Build something", "Coductor", "Python")
+    result = await ask_coductor_to_plan("Build something", "Coductor", "Python")
     assert isinstance(result, dict)
     template.render.assert_called_once_with(idea="Build something", name="Coductor", stack="Python")
     mock_send_prompt.assert_called_once()
