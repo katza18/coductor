@@ -56,7 +56,7 @@ def safe_write_file(filepath: str, new_content: str, force: bool = False):
     old_content = ""
 
     if filepath.exists():
-        old_content = filepath.read_text()
+        old_content = filepath.read_text(encoding='utf-8')
 
         if old_content.strip() == new_content.strip():
             console.print(f"[green]No changes needed for {filepath}[/green]")
@@ -81,7 +81,7 @@ def safe_write_file(filepath: str, new_content: str, force: bool = False):
 
     # Write the file
     filepath.parent.mkdir(parents=True, exist_ok=True)
-    filepath.write_text(new_content)
+    filepath.write_text(new_content, encoding='utf-8')
     console.print(f"[green]Wrote to {filepath}[/green]")
 
 
@@ -106,8 +106,8 @@ def append_docstring(filepath: str, docstring: str):
 
     # Get file extension
     file_extension = filepath.suffix
-    start_comment = file_type_to_multi_line_comment[file_extension]['start']
-    end_comment = file_type_to_multi_line_comment[file_extension]['end']
+    start_comment = file_type_to_multi_line_comment.get(file_extension, {"start": ""})['start']
+    end_comment = file_type_to_multi_line_comment.get(file_extension, {"end": ""})['end']
 
     # If the file does not exist, create it with the docstring.
     if not filepath.exists():
@@ -149,10 +149,11 @@ def append_docstring(filepath: str, docstring: str):
     console.print(f"[green]Wrote to {filepath}[/green]")
 
 
-def create_structure_from_dict(file_structure: dict, base_path: Path = Path('.')):
+def create_structure_from_dict(file_structure: dict, base_path: str = './'):
     '''
     Create a directory structure based on a dictionary.
     '''
+    base_path = Path(base_path)
     for name, content in file_structure.items():
         path = base_path / name
         if isinstance(content, dict):
@@ -162,8 +163,7 @@ def create_structure_from_dict(file_structure: dict, base_path: Path = Path('.')
         else:
             if not path.exists():
                 # Create a file with the content
-                safe_write_file(path, content)
-                console.print(f"[green]Created file:[/green]{path}")
+                append_docstring(str(path), content)
             else:
                 # Add the docstring to the begging if the file exists
                 append_docstring(path, content)
