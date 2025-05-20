@@ -17,10 +17,10 @@
 ---
 
 ## 📦 2. Install Dependencies
-- [ ] Install runtime packages: `typer`, `openai`, `pyyaml`, `rich`, `tiktoken`, `dotenv`
-- [ ] Install dev tools: `pytest`, `black`, `isort`, `mypy`, `pre-commit`
-- [ ] Create a `.env` file and store OpenAI API key
-- [ ] Load `.env` key in `agent.py`
+- [x] Install runtime packages: `typer`, `openai`, `pyyaml`, `rich`, `tiktoken`, `dotenv`
+- [x] Install dev tools: `pytest`, `black`, `isort`, `mypy`, `pre-commit`
+- [x] Create a `.env` file and store OpenAI API key
+- [x] Load `.env` key in `agent.py`
 
 ---
 
@@ -30,7 +30,9 @@
 - [x] Load OpenAI API key securely
 - [x] Implement prompt send function (text + streaming)
 - [x] Add token management helpers
-- [ ] Integrate prompt templates
+- [x] Integrate prompt templates
+- [ ] Add option to get api key from user if not present in .env, then store in .env
+- [ ] Add model selection
 
 ### `core/memory.py` (Project State)
 - [x] Track todos (`.coductor/todo.yml`)
@@ -41,6 +43,8 @@
 - [x] Safely write or append to files
 - [x] Preview diffs with `rich`
 - [x] Add overwrite protection and confirmation
+- [ ] Add support for ''' comment python
+- [x] Add error handling for unaccounted for language docstrings
 
 ### `core/project_analyzer.py` (Repo Parsing)
 - [x] Recursively scan file tree
@@ -74,15 +78,22 @@
 - [x] Ask LLM to generate tests
 - [x] Write to `tests/test_*.py`
 
-### Global
+### `scaffold.py` `add.py` `tests.py`
 - [ ] Add initial prompt if the project has no session history.
+
+### `plan_project.yml`
+- [ ] Improve prompt on TODO list
+- [ ] Improve docstrings
 
 ---
 
 ## 🧪 5. Testing
-- [x] Create `tests/test_build.py`
-- [ ] Create `tests/test_add.py`
-- [ ] Create `tests/test_tests.py`
+- [x] Create `tests/test_build.py` and write tests.
+- [x] Create `tests/test_build_unit.py` and write tests.
+- [ ] Create `tests/test_add.py` and write tests.
+- [ ] Create `tests/test_tests.py` and write tests.
+- [ ] Create `tests/test_agent.py` and write tests.
+- [x] Create `tests/test_file_writer_unit.py` and write tests.
 - [ ] Add unit tests for core logic (`memory`, `file_writer`, etc.)
 - [ ] Use `pytest` and fixtures
 - [ ] Optional: Add test watcher (`pytest-watch`)
@@ -97,8 +108,8 @@
 ---
 
 ## 💬 7. CLI Entry (`main.py`)
-- [ ] Set up `typer.Typer()` and register commands
-- [ ] Route each command to its script
+- [x] Set up `typer.Typer()` and register commands
+- [x] Route each command to its script
 - [ ] Add help strings and CLI docs
 
 ---
