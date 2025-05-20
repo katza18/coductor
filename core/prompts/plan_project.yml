@@ -8,11 +8,11 @@ prompt: |
 
   Your task is to recommend:
   1. File Structure - Describe the directory and file structure of the project.
-  2. File docstrings - Describe the docstrings for each file.
-  3. Test suite - Include test cases in doctstrings for test files.
-  4. TODO List - Outline the project as a highly detailed list of TODO items to complete MVP.
+  2. File docstrings - Describe the docstrings for each file in detail including a description of the file, what functions should be in the file, and what those functions do.
+  3. Test suite - Include a comprehensive list of test cases in the doctstrings for test files.
+  4. TODO List - Provide a full plan for the project as a highly detailed list of TODO items to complete MVP. There should be a minimum of 3 tasks per file and a maximum of 6 tasks.
 
-  Return only a JSON object like this:
+  Return only a JSON object like this. Do not use markdown format.:
   {
     todo: {
       "file1": [
@@ -25,7 +25,7 @@ prompt: |
       ]
     },
     "structure": {
-      "project_root": {
+      "{{name}}": {
         "folder": {
           "file": "docstring",
           "subfolder": {

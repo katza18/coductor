@@ -12,7 +12,7 @@ prompt: |
     
   Project idea: {{ idea }}
 
-  Respond with a JSON object like this:
+  Respond with a JSON object like this. Do not use markdown format.:
   {
     "name": "<project_name>",
     "stack": {
