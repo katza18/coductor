@@ -41,6 +41,7 @@ async def ask_coductor_for_name_and_stack(idea: str) -> dict[str, str]:
     return await send_prompt(prompt)
 
 
+
 def confirm_name_and_stack(name: str, stack: str) -> bool:
     '''
     Confirm the project name and tech stack with the user.
@@ -64,9 +65,11 @@ def confirm_plan(plan: dict) -> bool:
     '''
     Confirm the plan with the user.
     '''
-    console.print("[bold cyan]TODO List:[/bold cyan]")
-    for i, item in enumerate(plan['todo'], 1):
-        console.print(f"{i}. {item}")
+    console.print("[bold cyan]TODO:[/bold cyan]")
+    for i, (goal, tasks) in enumerate(plan['todo'].items(), 1):
+        console.print(f"{i}. {goal}")
+        for task in tasks:
+            console.print(f"- [ ] {task}")
 
     console.print(f"[bold cyan]File Structure:[/bold cyan]")
     console.print(plan['structure'])
@@ -82,20 +85,21 @@ def scaffold_project(file_structure: dict, root: str = "./") -> None:
     create_structure_from_dict(file_structure, base_path=root)
 
 
-def generate_readme(project_name: str, idea: str, tech_stack: str) -> str:
+def generate_readme(project_name: str, idea: str, tech_stack: str, project_root: str) -> str:
     '''
     Generate a README.md file based on the project name and plan.
     '''
     readme_content = f"# {project_name}\n\n"
     readme_content += "## Project Overview\n\n"
-    readme_content += f"**Idea:** {idea}\n\n"
-    readme_content += "## Tech Stack\n\n"
-    readme_content += f"{tech_stack}\n\n"
+    readme_content += idea
+    readme_content += "\n\n## Tech Stack"
+    for category, stack in tech_stack.items():
+        readme_content += f"\n- **{category}**: {', '.join(stack)}"
 
-    safe_write_file("README.md", readme_content)
+    safe_write_file(project_root + "README.md", readme_content)
 
 
-def generate_todo(todo_dict: dict) -> str:
+def generate_todo(todo_dict: dict, parent_path: str) -> str:
     '''
     Generate a TODO.md file based on the project name and plan.
     '''
@@ -105,14 +109,14 @@ def generate_todo(todo_dict: dict) -> str:
         for task in tasks:
             todo_content += f"\n- [ ] {task}"
 
-    safe_write_file("TODO.md", todo_content)
+    safe_write_file(parent_path + "TODO.md", todo_content)
 
 
 @app.command("new")
-def build_new():
-    asyncio.run(_build_new())
+def build_new(parent_path: str = "./"):
+    asyncio.run(_build_new(parent_path))
 
-async def _build_new():
+async def _build_new(parent_path: str):
     try:
         console.print("[bold green]Welcome to the Coductor Project Builder![/bold green]")
 
@@ -136,9 +140,10 @@ async def _build_new():
             raise typer.Abort()
 
         # Scaffold the project based on the plan
-        scaffold_project(plan['structure'])
-        generate_readme(name_stack['name'], idea, name_stack['stack'])
-        generate_todo(plan['todo'])
+        md_file_path = parent_path + name_stack['name'] + "/"
+        scaffold_project(plan['structure'], parent_path)
+        generate_readme(name_stack['name'], idea, name_stack['stack'], md_file_path)
+        generate_todo(plan['todo'], md_file_path)
 
         console.print("[green]Project initialized successfully![/green]")
     except Exception as e:
