@@ -12,18 +12,18 @@ Spec:
 '''
 import os
 from dotenv import load_dotenv
-import openai
+from openai import AsyncOpenAI
 from pathlib import Path
 import tiktoken
 import json
 from rich.console import Console
 
 load_dotenv()
-openai.api_key = os.getenv("OPENAI_API_KEY")
+API_KEY = os.getenv("OPENAI_API_KEY")
 PROMPTS_DIR = Path(__file__).parent / "prompts"
 DEFAULT_MODEL = "gpt-4o-mini"
 MAX_TOKENS = 128000  # adjust depending on the model
-SESSION_HISTORY_FILE = Path.home() / ".coductor" / "session.json"
+SESSION_HISTORY_FILE = Path(__file__).parent.parent / ".coductor" / "session.json"
 console = Console()
 
 
@@ -44,6 +44,10 @@ def load_history() -> list[dict]:
     Load the conversation history from a file.
     '''
     if not SESSION_HISTORY_FILE.exists():
+        # Create the session history file if it doesn't exist
+        SESSION_HISTORY_FILE.parent.mkdir(parents=True, exist_ok=True)
+        with open(SESSION_HISTORY_FILE, "w") as file:
+            json.dump([], file)
         return []
     with open(SESSION_HISTORY_FILE, "r") as file:
         return json.load(file)
@@ -66,8 +70,9 @@ async def send_prompt(prompt: str, model: str = DEFAULT_MODEL) -> dict:
     session_history.append({"role": "user", "content": prompt})
     
     try:
+        client = AsyncOpenAI(api_key=API_KEY)
         # Initialize the OpenAI client
-        response = await openai.chat.completions.create(
+        response = await client.chat.completions.create(
             model=model,
             messages=session_history,
             stream=False,
