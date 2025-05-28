@@ -16,6 +16,7 @@ Output: Project directory with scaffolding + summaries
 import asyncio
 import typer
 from rich.console import Console
+from rich.prompt import Prompt
 from core.agent import send_prompt
 from core.file_writer import safe_write_file, create_structure_from_dict
 from core.prompts.prompt_loader import load_prompt
@@ -28,8 +29,7 @@ def get_project_idea() -> str:
     '''
     Prompt the user for a project idea.
     '''
-    console.print("[bold green]What do you want to build?[/bold green]")
-    return typer.prompt("Describe your project idea")
+    return Prompt.ask("\n[bold cyan]What do you want to build?[/bold cyan]")
 
 
 async def ask_coductor_for_name_and_stack(idea: str) -> dict[str, str]:
@@ -111,6 +111,24 @@ def generate_todo(todo_dict: dict, parent_path: str) -> str:
 
     safe_write_file(parent_path + "TODO.md", todo_content)
 
+def print_title_message():
+    title = """                             
+ ██████╗ ██████╗ ██████╗ ██╗   ██╗ ██████╗████████╗ ██████╗ ██████╗ 
+██╔════╝██╔═══██╗██╔══██╗██║   ██║██╔════╝╚══██╔══╝██╔═══██╗██╔══██╗
+██║     ██║   ██║██║  ██║██║   ██║██║        ██║   ██║   ██║██████╔╝
+██║     ██║   ██║██║  ██║██║   ██║██║        ██║   ██║   ██║██╔══██╗
+╚██████╗╚██████╔╝██████╔╝╚██████╔╝╚██████╗   ██║   ╚██████╔╝██║  ██║
+ ╚═════╝ ╚═════╝ ╚═════╝  ╚═════╝  ╚═════╝   ╚═╝    ╚═════╝ ╚═╝  ╚═╝                
+    """
+    console.rule(style="bold cyan")
+    console.print(title, style="bold cyan")
+    console.rule(style="bold cyan")
+    console.print(
+        """
+Coductor takes a project idea and builds a complete project structure
+with a README, TODO list, and docstrings to help you get started.
+        """)
+    console.rule(style="bold cyan")
 
 @app.command("new")
 def build_new(parent_path: str = "./"):
@@ -118,7 +136,7 @@ def build_new(parent_path: str = "./"):
 
 async def _build_new(parent_path: str):
     try:
-        console.print("[bold green]Welcome to the Coductor Project Builder![/bold green]")
+        print_title_message()
 
         # Get project idea from user
         idea = get_project_idea()
@@ -147,5 +165,4 @@ async def _build_new(parent_path: str):
 
         console.print("[green]Project initialized successfully![/green]")
     except Exception as e:
-        console.print(f"[red]Error:[/red] {e}")
         raise typer.Abort()
