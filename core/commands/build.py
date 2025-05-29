@@ -16,7 +16,7 @@ Output: Project directory with scaffolding + summaries
 import asyncio
 import typer
 from rich.console import Console
-from rich.prompt import Prompt
+from rich.prompt import Prompt, Confirm
 from core.agent import send_prompt
 from core.file_writer import safe_write_file, create_structure_from_dict
 from core.prompts.prompt_loader import load_prompt
@@ -46,10 +46,13 @@ def confirm_name_and_stack(name: str, stack: str) -> bool:
     '''
     Confirm the project name and tech stack with the user.
     '''
-    console.print(f"[bold cyan]Project Name:[/bold cyan] {name}")
-    console.print(f"[bold cyan]Tech Stack:[/bold cyan] {stack}")
+    console.rule(style="bold cyan")
+    console.print("\n[bold cyan]Coductor's Proposal[/bold cyan]")
+    console.print(f"\n[bold cyan]Project Name:[/bold cyan] {name}")
+    console.print(f"[bold cyan]Tech Stack:[/bold cyan] {stack}\n")
+    console.rule(style="bold cyan")
 
-    return typer.confirm("\nDo you want to proceed with this name and stack?")
+    return Confirm.ask("[bold cyan]\nDo you want to proceed with this name and stack?[/bold cyan]")
 
 
 async def ask_coductor_to_plan(idea: str, name: str, stack: str) -> dict:
@@ -65,16 +68,16 @@ def confirm_plan(plan: dict) -> bool:
     '''
     Confirm the plan with the user.
     '''
-    console.print("[bold cyan]TODO:[/bold cyan]")
+    console.print("\n[bold cyan]TODO:[/bold cyan]")
     for i, (goal, tasks) in enumerate(plan['todo'].items(), 1):
         console.print(f"{i}. {goal}")
         for task in tasks:
             console.print(f"- [ ] {task}")
 
-    console.print(f"[bold cyan]File Structure:[/bold cyan]")
+    console.print(f"\n[bold cyan]File Structure:[/bold cyan]")
     console.print(plan['structure'])
 
-    return typer.confirm("\nDo you want to proceed with this plan?")
+    return Confirm.ask("\n[bold cyan]Do you want to proceed with this plan?[/bold cyan]")
 
 
 def scaffold_project(file_structure: dict, root: str = "./") -> None:
@@ -120,6 +123,7 @@ def print_title_message():
 ╚██████╗╚██████╔╝██████╔╝╚██████╔╝╚██████╗   ██║   ╚██████╔╝██║  ██║
  ╚═════╝ ╚═════╝ ╚═════╝  ╚═════╝  ╚═════╝   ╚═╝    ╚═════╝ ╚═╝  ╚═╝                
     """
+    console.clear()
     console.rule(style="bold cyan")
     console.print(title, style="bold cyan")
     console.rule(style="bold cyan")
